@@ -22,7 +22,7 @@ module.exports = {
 				var a = 4;
 				console.log(a);
 				res.send(created);
-				Test.publishCreate({id: created.id, thing: created.thing, name: created.name});
+				Test.publishCreate({id: created.id, thing: created.thing, name: created.name, test: created});
 			}
 		});
 		//res.send('Ganondorf');
@@ -45,13 +45,14 @@ module.exports = {
 		Association.watch(req);
 		Thing.watch(req);
 	},
+	//Change this for the love of gosh
 	clicks: function(req, res) {
 		console.log('Use of socket is: ' + req.isSocket);
 		console.log(req.body);
 		Test.create({date: '3/5/15', name: req.body.key}).exec(function createCB(err, created){
 			console.log(created);
 			res.send(created);
-			Test.publishCreate({id: created.id, date: created.date, name: created.name});
+			Test.publishCreate({id: created.id, date: created.date, name: created.name, test: created});
 		});
 	},
 	createAssoc: function(req, res) {

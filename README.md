@@ -17,4 +17,4 @@ Making the code cleaner:
 	Give associations and things unique names like test
 	Add console logs in app.js when a user clicks on a test and association during 'Connect a specific thing to stuff' so we have feedback showing the clicks
 
-Homework:  Add a thing collection (scrap) to test (game), then make a button that removes two things from the stuff of two different associations (players) and put them both into the new collection
+Homework:  Finally make this look nice.  Make every socket.on('test', 'association', 'thing' into angular.  Bonus, use ng-click for buttons, probably need to check g+)

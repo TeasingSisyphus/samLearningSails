@@ -3,6 +3,11 @@
         {{homepage.value}}
         {{4+5}}
         This is a test
+        <li ng-repeat='test in homepage.tests'>
+            name: {{test.name}}
+            date: {{test.date}}
+            id:   {{test.id}}
+        </li>
     </div>
     <ul>
         <strong>Test creators</strong>

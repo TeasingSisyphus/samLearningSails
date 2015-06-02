@@ -13,8 +13,64 @@
 	var associationOne = null;
 	var associationTwo = null;
 
-	app.controller('homepageController', function(){
+	app.controller('homepageController', function($scope){
 		this.value = 'value';
+		this.tests = [];
+		this.associations = [];
+		this.things = [];
+		io.socket.on('test', function(obj){
+			console.log('\nA test event is happening');
+			console.log(obj.data);
+			switch(obj.verb) {
+				case 'created':
+					$scope.homepage.tests.push(obj.data.test);
+					console.log(obj.data);
+					console.log($scope.homepage.tests);
+					if ('date' in obj.data) {
+						$('#list').append("<li class = 'test' id = " + obj.data.id + ">name: " + obj.data.name + " date: " + obj.data.date + "</li>");
+					}
+					else {$('#list').append("<li class = 'test' id = " + obj.data.id + ">name: " + obj.data.name + "</li>");}
+					$('.test').off();
+					$('.test').on('click', function(){
+						console.log('It turned off and on');
+						io.socket.get('/test/subscribe', {key: $(this).prop('id')}, function(res){
+							console.log('Suck it Angular');
+						});
+					});
+					break;
+				case 'updated':
+					console.log('Updated');
+					console.log(obj.data.test);
+					$('.test').each(function(index){
+						// Below was the troubleshooting for the if statement
+						// console.log(index);
+						// console.log($(this));
+						// console.log($(this).prop('id'));
+						// console.log(obj.data.test.id);
+						// console.log(obj.data.test.id === parseInt($(this).prop('id')));
+						// console.log(typeof obj.data.test.id);
+						// console.log(typeof $(this).prop('id'));
+						if(obj.data.test.id === parseInt($(this).prop('id')))
+							if('date' in obj.data.test) {
+								var str = "name: " + obj.data.test.name + ' date: ' + obj.data.test.date;
+							}
+						else {
+							var str = "name: " + obj.data.test.name;
+						}
+						$(this).html(str);
+					});
+					break;
+				case 'destroyed':
+					console.log('Destroyed');2
+					$('.test').each(function(index){
+						if(obj.id === parseInt($(this).prop('id'))) {
+							var str = '';
+						}
+						$(this).html(str);
+					});			
+				}
+			$scope.$apply();
+		});
 	});
 
 	$("#button").on('click', function(){
@@ -399,55 +455,6 @@
 		io.socket.get('/test/connect', function(res){
 			console.log(res);
 		});
-	});
-	io.socket.on('test', function(obj){
-		console.log('\nA test event is happening');
-		console.log(obj.data);
-		switch(obj.verb) {
-			case 'created':
-				if ('date' in obj.data) {
-					$('#list').append("<li class = 'test' id = " + obj.data.id + ">name: " + obj.data.name + " date: " + obj.data.date + "</li>");
-				}
-				else {$('#list').append("<li class = 'test' id = " + obj.data.id + ">name: " + obj.data.name + "</li>");}
-				$('.test').off();
-				$('.test').on('click', function(){
-					console.log('It turned off and on');
-					io.socket.get('/test/subscribe', {key: $(this).prop('id')}, function(res){
-						console.log('Suck it Angular');
-					});
-				});
-				break;
-			case 'updated':
-				console.log('Updated');
-				console.log(obj.data.test);
-				$('.test').each(function(index){
-					// Below was the troubleshooting for the if statement
-					// console.log(index);
-					// console.log($(this));
-					// console.log($(this).prop('id'));
-					// console.log(obj.data.test.id);
-					// console.log(obj.data.test.id === parseInt($(this).prop('id')));
-					// console.log(typeof obj.data.test.id);
-					// console.log(typeof $(this).prop('id'));
-					if(obj.data.test.id === parseInt($(this).prop('id')))
-						if('date' in obj.data.test) {
-							var str = "name: " + obj.data.test.name + ' date: ' + obj.data.test.date;
-						}
-					else {
-						var str = "name: " + obj.data.test.name;
-					}
-					$(this).html(str);
-				});
-				break;
-			case 'destroyed':
-				console.log('Destroyed');2
-				$('.test').each(function(index){
-					if(obj.id === parseInt($(this).prop('id'))) {
-						var str = '';
-					}
-					$(this).html(str);
-				});			
-			}
 	});
 })();
 
